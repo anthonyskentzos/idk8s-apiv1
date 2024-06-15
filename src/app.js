@@ -1,3 +1,2 @@
-setTimeout(() => {
-    console.log({ sha: process.env.SHA});
-}, 1000000);
+console.log({ sha: process.env.SHA});
+setTimeout(() => {}, 100000000);
