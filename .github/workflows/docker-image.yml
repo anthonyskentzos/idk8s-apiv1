@@ -21,21 +21,6 @@ jobs:
     needs: set-env
     runs-on: ubuntu-latest
     steps:
-    jobs:
-
-  set-env:
-    runs-on: ubuntu-latest
-    outputs:
-      short_sha: ${{ steps.short-sha.outputs.sha }}
-    steps:
-    - name: Set Short SHA as Output
-      id: short-sha
-      run: echo "::set-output name=sha::$(echo ${{ github.sha }} | cut -c1-7)"
-
-  build:
-    needs: set-env
-    runs-on: ubuntu-latest
-    steps:
     - name: Checkout the repository
       uses: actions/checkout@v2
     - name: Build the Docker image
