@@ -17,13 +17,8 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag k8s-app:latest
 
-  push:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Login to GitHub Container Registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
     - name: Push the Docker image
-      run: docker tag k8s-app:latest ghcr.io/${{ github.repository_owner }}/k8s-app:latest
-    - name: Push the Docker image
-      run: docker push ghcr.io/${{ github.repository_owner }}/k8s-app:latest
+      run: |
+      echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      docker tag k8s-app:latest "${{ secrets.DOCKER_USERNAME }}/k8s-app:latest"
+      docker push "${{ secrets.DOCKER_USERNAME }}/k8s-app:latest"
