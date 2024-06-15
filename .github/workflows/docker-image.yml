@@ -18,7 +18,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag k8s-app:latest
+      run: docker build . --file Dockerfile --tag k8s-app:latest --build-arg SHA=${{ github.sha }}
 
     - name: Push to GitHub Container Registry
       run: |
