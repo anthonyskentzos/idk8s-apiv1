@@ -9,10 +9,19 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag k8s-app:$(date +%s)
+      run: docker build . --file Dockerfile --tag k8s-app:${{ github.sha }}
+
+  push:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Log in to GitHub Container Registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    - name: Tag image
+      run: docker tag k8s-app:${{ github.sha }} ghcr.io/${{ github.repository }}/k8s-app:${{ github.sha }}
+    - name: Push image to GitHub Container Registry
+      run: docker push ghcr.io/${{ github.repository }}/k8s-app:${{ github.sha }}
