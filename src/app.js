@@ -1,1 +1,1 @@
-console.log(`SHA: ${process.env.SHA}`);
+console.log({ sha: process.env.SHA });
