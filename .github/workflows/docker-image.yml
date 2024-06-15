@@ -9,7 +9,6 @@ on:
 jobs:
 
   build:
-    needs: set-env
     runs-on: ubuntu-latest
     steps:
     - name: Checkout the repository
