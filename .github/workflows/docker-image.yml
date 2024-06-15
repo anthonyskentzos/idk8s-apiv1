@@ -6,19 +6,28 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  SHORT_SHA: ${{ needs.set-env.outputs.short_sha }}
+
 jobs:
 
-  build:
+  set-env:
     runs-on: ubuntu-latest
+    outputs:
+      short_sha: ${{ steps.short-sha.outputs.sha }}
     steps:
-    - name: Set Short SHA as Environment Variable
-      run: echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
-
     - name: Checkout the repository
       uses: actions/checkout@v4
+    - name: Set Short SHA as Output
+      id: short-sha
+      run: echo "::set-output name=sha::$(echo ${{ github.sha }} | cut -c1-7)"
 
+  build:
+    needs: set-env
+    runs-on: ubuntu-latest
+    steps:
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag k8s-app:${{ $SHORT_SHA }}
+      run: docker build . --file Dockerfile --tag k8s-app:${{ env.SHORT_SHA }}
 
   push:
     needs: build
@@ -26,9 +35,3 @@ jobs:
     steps:
     - name: Log in to GitHub Container Registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-    - name: Tag image
-      run: docker tag k8s-app:${{ $SHORT_SHA }} ghcr.io/${{ github.repository }}/k8s-app:${{ $SHORT_SHA }}
-
-    - name: Push image to GitHub Container Registry
-      run: docker push ghcr.io/${{ github.repository }}/k8s-app:${{ $SHORT_SHA }}
