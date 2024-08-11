@@ -1,6 +1,11 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const port = 3000;
+
+app.use(cors({
+  origin: 'http://localhost:8080' // Allow requests from this origin
+}));
 
 // Route to return the current date in a JSON object
 app.get('/', (req, res) => {
