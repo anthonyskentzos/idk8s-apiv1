@@ -7,9 +7,26 @@ app.use(cors({
   origin: 'http://localhost:8080' // Allow requests from this origin
 }));
 
+const pawPatrolCharacters = [
+  'Chase',
+  'Marshall',
+  'Skye',
+  'Rubble',
+  'Zuma',
+  'Rocky',
+  'Everest',
+  'Tracker',
+  'Ryder'
+];
+
 app.get('/', (req, res) => {
-  const currentDate = new Date();
-  res.json({ date: currentDate.toISOString() });
+  res.send('Why are you here?');
+});
+
+app.get('/pawpatrol', (req, res) => {
+  const randomIndex = Math.floor(Math.random() * pawPatrolCharacters.length);
+  const randomCharacter = pawPatrolCharacters[randomIndex];
+  res.json({ character: randomCharacter });
 });
 
 app.get('/appver', (req, res) => {
