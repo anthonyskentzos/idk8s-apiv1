@@ -1,4 +1,4 @@
-FROM node:18 as base
+FROM node:20-alpine as base
 
 WORKDIR /usr/src/app
 
@@ -13,4 +13,4 @@ EXPOSE 3000
 ARG SHA
 ENV SHA=$SHA
 
-CMD ["node", "start"]
+CMD ["npm", "start"]
