@@ -1,12 +1,16 @@
-FROM node:alpine
+FROM node:18 as base
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-COPY src .
+COPY package*.json ./
 
-EXPOSE 8080
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
 
 ARG SHA
 ENV SHA=$SHA
 
-CMD [ "node", "app.js" ]
+CMD ["node", "start"]
