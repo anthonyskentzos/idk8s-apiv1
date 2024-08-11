@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 
 app.get('/appver', (req, res) => {
   const appVerValue = process.env.APP_VER || 'APP_VER is not set';
-  res.json({ sha: shaValue });
+  res.json({ appVer: appVerValue });
 });
 
 // Start the server
