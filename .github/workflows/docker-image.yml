@@ -16,9 +16,13 @@ jobs:
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v4
-
+    
+    - name: Extract app version
+      id: extract_version
+      run: echo "::set-output name=APP_VER::$(jq -r .version package.json)"
+    
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag idk8s-apiv1:latest --build-arg SHA=${{ github.sha }}
+      run: docker build . --file Dockerfile --tag idk8s-apiv1:latest --build-arg APP_VER=${{ steps.extract_version.outputs.APP_VER }}
 
     - name: Push to GitHub Container Registry
       run: |

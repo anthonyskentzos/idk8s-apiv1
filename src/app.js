@@ -7,15 +7,13 @@ app.use(cors({
   origin: 'http://localhost:8080' // Allow requests from this origin
 }));
 
-// Route to return the current date in a JSON object
 app.get('/', (req, res) => {
   const currentDate = new Date();
   res.json({ date: currentDate.toISOString() });
 });
 
-// Route to return the SHA value from the environment variables
-app.get('/sha', (req, res) => {
-  const shaValue = process.env.SHA || 'SHA environment variable is not set';
+app.get('/appver', (req, res) => {
+  const appVerValue = process.env.APP_VER || 'APP_VER is not set';
   res.json({ sha: shaValue });
 });
 

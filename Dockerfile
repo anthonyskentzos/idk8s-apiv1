@@ -10,7 +10,7 @@ COPY . .
 
 EXPOSE 3000
 
-ARG SHA
-ENV SHA=$SHA
+ARG APP_VER
+ENV APP_VER=$APP_VER
 
 CMD ["npm", "start"]
