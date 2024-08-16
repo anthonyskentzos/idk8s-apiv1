@@ -4,7 +4,7 @@ const cors = require('cors');
 const port = 3000;
 
 app.use(cors({
-  origin: 'http://idk8s.example' // Allow requests from this origin
+  origin: '*' // Allow requests from this origin
 }));
 
 const pawPatrolCharacters = [
