@@ -10,10 +10,12 @@ jobs:
 
   get-short-sha:
     runs-on: ubuntu-latest 
+    outputs:
+      short_sha: ${{ steps.set-short-sha.outputs.short_sha }}
     steps:
       - name: Generate Short SHA
         id: set-short-sha
-        run: echo "::set-output name=short_sha::$(git rev-parse --short=7 HEAD)"
+        run: echo "short_sha=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
 
   build:
     runs-on: ubuntu-latest
