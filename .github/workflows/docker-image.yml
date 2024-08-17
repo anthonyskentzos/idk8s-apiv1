@@ -17,23 +17,23 @@ jobs:
     - name: Checkout the repository
       uses: actions/checkout@v4
 
-    - name: Short SHA
-      run: |
-        echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
+    - name: Generate Short SHA
+      id: set-short-sha
+      run: echo "::set-output name=short_sha::$(git rev-parse --short=7 HEAD)"
     
     - name: Docker Build
       run: |
           docker buildx build . \
           --file Dockerfile \
           --tag ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:latest \
-          --tag ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:${{ env.SHORT_SHA }} \
-          --build-arg IMAGE_TAG=${{ env.SHORT_SHA }}
+          --tag ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:${{ needs.get-short-sha.outputs.short_sha }} \
+          --build-arg IMAGE_TAG=${{ needs.get-short-sha.outputs.short_sha }}
 
     - name: Push to GitHub Container Registry
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         
-        docker push ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:${{ env.SHORT_SHA }}
+        docker push ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:${{ needs.get-short-sha.outputs.short_sha }}
         # ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:latest
 
   deploy:
@@ -45,25 +45,21 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: anthonyskentzos/idk8s-infra
-          token: ${{ secrets.IDK8S_PAT }}
-
-      - name: Short SHA
-        run: |
-          echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV     
+          token: ${{ secrets.IDK8S_PAT }} 
 
       - name: Kustomize
         uses: imranismail/setup-kustomize@v2.1.0
         with:
           kustomize-version: 4.0.0
 
-      - run: kustomize edit set image ghcr.io/${{ github.repository_owner}}/idk8s-apiv1:${{ env.SHORT_SHA }}
+      - run: kustomize edit set image ghcr.io/${{ github.repository_owner}}/idk8s-apiv1:${{ needs.get-short-sha.outputs.short_sha }}
         working-directory: apps/apiv1/envs/dev
 
       # TODO: Fix
       - run: |
           git config user.email "gitops@idk8s.example"
           git config user.name "gitops"
-          git commit -am "update apiv1 to ${{ env.SHORT_SHA }}"
+          git commit -am "update apiv1 to ${{ needs.get-short-sha.outputs.short_sha }}"
           git pull --rebase
           git push
 
