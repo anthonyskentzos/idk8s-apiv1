@@ -41,13 +41,13 @@ jobs:
     needs:
       - build
     steps:
-
-      - uses: actions/checkout@v2
+      - name: Checkout infra repo
+        uses: actions/checkout@v2
         with:
           repository: anthonyskentzos/idk8s-infra
-          # token: ${{secrets.REPO_TOKEN}}
+          token: ${{ secrets.IDK8S_PAT }}
 
-      - uses: imranismail/setup-kustomize@v1
+      - uses: imranismail/setup-kustomize@v2.1.0
         with:
           kustomize-version: 4.0.0
 
