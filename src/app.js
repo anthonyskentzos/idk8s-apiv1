@@ -29,9 +29,9 @@ app.get('/pawpatrol', (req, res) => {
   res.json({ character: randomCharacter });
 });
 
-app.get('/appver', (req, res) => {
-  const appVerValue = process.env.APP_VER || 'APP_VER is not set';
-  res.json({ appVer: appVerValue });
+app.get('/imagetag', (req, res) => {
+  const imageTagValue = process.env.IMAGE_TAG || 'IMAGE_TAG is not set';
+  res.json({ imageTag: imageTagValue });
 });
 
 // Start the server
