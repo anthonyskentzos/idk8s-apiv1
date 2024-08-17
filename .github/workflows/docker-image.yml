@@ -24,10 +24,13 @@ jobs:
     - name: Short SHA
       run: |
         echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
-        echo SHORT_SHA: ${{ env.SHORT_SHA }}
     
     - name: Docker Build
-      run: docker build . --file Dockerfile --tag idk8s-apiv1:latest --tag idk8s-apvi:${{ env.SHORT_SHA }} #--build-arg APP_VER=${{ steps.extract_version.outputs.APP_VER }}
+      run: docker build . \
+            --file Dockerfile \
+            --tag idk8s-apiv1:latest \
+            --tag idk8s-apiv1:${{ env.SHORT_SHA }}
+            #--build-arg APP_VER=${{ steps.extract_version.outputs.APP_VER }}
 
     - name: Push to GitHub Container Registry
       run: |
