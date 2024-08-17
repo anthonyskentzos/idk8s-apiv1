@@ -57,7 +57,7 @@ jobs:
       - run: |
           git config user.email "gitops@idk8s.example"
           git config user.name "gitops"
-          git commit -am "Gitops update to $APP_NAME"
+          git commit -am "update apiv1 to ${{ env.SHORT_SHA }}"
           git pull --rebase
           git push
 
