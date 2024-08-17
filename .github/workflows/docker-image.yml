@@ -8,6 +8,13 @@ on:
 
 jobs:
 
+  get-short-sha:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: Generate Short SHA
+        id: set-short-sha
+        run: echo "::set-output name=short_sha::$(git rev-parse --short=7 HEAD)"
+
   build:
     runs-on: ubuntu-latest
     permissions:
@@ -16,11 +23,7 @@ jobs:
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v4
-
-    - name: Generate Short SHA
-      id: set-short-sha
-      run: echo "::set-output name=short_sha::$(git rev-parse --short=7 HEAD)"
-    
+        
     - name: Docker Build
       run: |
           docker buildx build . \
