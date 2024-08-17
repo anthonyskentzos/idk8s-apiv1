@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ "master" ]
 
-env:
-  SHORT_SHA: $(git rev-parse --short=7 HEAD)
-
 jobs:
 
   build:
@@ -23,12 +20,15 @@ jobs:
     # - name: Extract app version
     #   id: extract_version
     #   run: echo "::set-output name=APP_VER::$(jq -r .version package.json)"
+
+    - name: Short SHA
+      run: echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV
     
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag idk8s-apiv1:latest idk8s-apvi:$SHORT_SHA #--build-arg APP_VER=${{ steps.extract_version.outputs.APP_VER }}
+    - name: Docker Build
+      run: docker build . --file Dockerfile --tag idk8s-apiv1:latest idk8s-apvi:${{ env.SHORT_SHA }} #--build-arg APP_VER=${{ steps.extract_version.outputs.APP_VER }}
 
     - name: Push to GitHub Container Registry
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        docker tag idk8s-apiv1:$SHORT_SHA ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:latest
-        docker push ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:$SHORT_SHA
+        docker tag idk8s-apiv1:${{ env.SHORT_SHA }} ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:latest
+        docker push ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:${{ env.SHORT_SHA }}
