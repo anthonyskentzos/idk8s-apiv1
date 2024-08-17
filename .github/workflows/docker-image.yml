@@ -35,3 +35,29 @@ jobs:
         
         docker push ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:${{ env.SHORT_SHA }}
         # ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    steps:
+
+      - uses: actions/checkout@v2
+        with:
+          repository: anthonyskentzos/idk8s-infra
+          # token: ${{secrets.REPO_TOKEN}}
+
+      - uses: imranismail/setup-kustomize@v1
+        with:
+          kustomize-version: 4.0.0
+
+      - run: kustomize edit set image ghcr.io/${{ github.repository_owner}}/idk8s-apiv1:${{ env.SHORT_SHA }}
+        working-directory: apps/apiv1/envs/dev
+
+      - run: |
+          git config user.email "gitops@idk8s.example"
+          git config user.name "gitops"
+          git commit -am "Gitops update to $APP_NAME"
+          git pull --rebase
+          git push
+
