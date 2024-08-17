@@ -16,10 +16,6 @@ jobs:
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v4
-    
-    # - name: Extract app version
-    #   id: extract_version
-    #   run: echo "::set-output name=APP_VER::$(jq -r .version package.json)"
 
     - name: Short SHA
       run: |
@@ -31,7 +27,7 @@ jobs:
           --file Dockerfile \
           --tag ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:latest \
           --tag ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:${{ env.SHORT_SHA }}
-          #--build-arg APP_VER=${{ steps.extract_version.outputs.APP_VER }}
+          --build-arg IMAGE_TAG=${{ env.SHORT_SHA }}
 
     - name: Push to GitHub Container Registry
       run: |
