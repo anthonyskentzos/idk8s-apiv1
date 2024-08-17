@@ -54,6 +54,7 @@ jobs:
       - run: kustomize edit set image ghcr.io/${{ github.repository_owner}}/idk8s-apiv1:${{ env.SHORT_SHA }}
         working-directory: apps/apiv1/envs/dev
 
+      # TODO: Fix
       - run: |
           git config user.email "gitops@idk8s.example"
           git config user.name "gitops"
