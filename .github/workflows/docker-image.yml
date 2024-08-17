@@ -47,7 +47,12 @@ jobs:
           repository: anthonyskentzos/idk8s-infra
           token: ${{ secrets.IDK8S_PAT }}
 
-      - uses: imranismail/setup-kustomize@v2.1.0
+      - name: Short SHA
+        run: |
+          echo "SHORT_SHA=$(git rev-parse --short=7 HEAD)" >> $GITHUB_ENV     
+
+      - name: Kustomize
+        uses: imranismail/setup-kustomize@v2.1.0
         with:
           kustomize-version: 4.0.0
 
