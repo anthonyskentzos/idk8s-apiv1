@@ -3,11 +3,11 @@ name: Docker Image CI
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
 
 env:
   APP_NAME: idk8s-apiv1
+  INFRA_REPO: anthonyskentzos/idk8s-infra
+  INFRA_DIR: apps/apiv1/envs/dev
 
 jobs:
   build:
@@ -51,7 +51,7 @@ jobs:
       - name: Git checkout idk8s-infra
         uses: actions/checkout@v2
         with:
-          repository: anthonyskentzos/idk8s-infra
+          repository: ${{ env.INFRA_REPO }}
           token: ${{ secrets.IDK8S_PAT }} 
 
       - name: Set up Kustomize
@@ -61,7 +61,7 @@ jobs:
 
       - name: Update Kustomize Image
         run: kustomize edit set image ghcr.io/${{ github.repository_owner }}/${{ env.APP_NAME }}:${{ needs.build.outputs.short_sha }}
-        working-directory: apps/apiv1/envs/dev
+        working-directory: ${{ env.INFRA_DIR }}
 
       - name: Commit and Push Changes
         run: |
