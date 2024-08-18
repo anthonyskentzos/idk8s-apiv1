@@ -5,9 +5,9 @@ on:
     branches: [ "master" ]
 
 env:
-  APP_NAME: idk8s-apiv2
+  APP_NAME: idk8s-apiv1
   INFRA_REPO: anthonyskentzos/idk8s-infra
-  INFRA_DIR: apps/apiv2/envs/dev
+  INFRA_DIR: apps/apiv1/envs/dev
 
 jobs:
   build:
