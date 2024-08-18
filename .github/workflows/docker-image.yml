@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  APP_NAME: idk8s-apiv1
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,16 +32,16 @@ jobs:
       run: |
           docker buildx build . \
           --file Dockerfile \
-          --tag ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:latest \
-          --tag ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:${{ env.short_sha }} \
+          --tag ghcr.io/${{ github.repository_owner }}/${{ env.APP_NAME }}:latest \
+          --tag ghcr.io/${{ github.repository_owner }}/${{ env.APP_NAME }}:${{ env.short_sha }} \
           --build-arg IMAGE_TAG=${{ env.short_sha }}
 
     - name: Push to GitHub Container Registry
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         
-        docker push ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:${{ env.short_sha }}
-        # ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:latest
+        docker push ghcr.io/${{ github.repository_owner }}/${{ env.APP_NAME }}:${{ env.short_sha }}
+        # ghcr.io/${{ github.repository_owner }}/${{ env.APP_NAME }}:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -57,14 +60,14 @@ jobs:
           kustomize-version: 4.0.0
 
       - name: Update Kustomize Image
-        run: kustomize edit set image ghcr.io/${{ github.repository_owner }}/idk8s-apiv1:${{ needs.build.outputs.short_sha }}
+        run: kustomize edit set image ghcr.io/${{ github.repository_owner }}/${{ env.APP_NAME }}:${{ needs.build.outputs.short_sha }}
         working-directory: apps/apiv1/envs/dev
 
       - name: Commit and Push Changes
         run: |
           git config user.email "gitops@idk8s.example"
           git config user.name "gitops"
-          git commit -am "update apiv1 to ${{ needs.build.short_sha }}"
+          git commit -am "update ${{ env.APP_NAME }} to ${{ needs.build.short_sha }}"
           git pull --rebase
           git push
 
