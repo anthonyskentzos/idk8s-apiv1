@@ -36,7 +36,7 @@ app.get('/imagetag', (req, res) => {
 
 app.get('/environment', (req, res) => {
   const environmentValue = process.env.CONFIGMAP_ENV || 'CONFIGMAP_ENV is not set';
-  res.json({ imageTag: imageTagValue });
+  res.json({ environment: environmentValue });
 });
 
 // Start the server
