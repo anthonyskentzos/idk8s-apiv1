@@ -34,6 +34,11 @@ app.get('/imagetag', (req, res) => {
   res.json({ imageTag: imageTagValue });
 });
 
+app.get('/environment', (req, res) => {
+  const environmentValue = process.env.CONFIGMAP_ENV || 'CONFIGMAP_ENV is not set';
+  res.json({ imageTag: imageTagValue });
+});
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
