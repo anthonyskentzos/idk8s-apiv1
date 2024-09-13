@@ -3,6 +3,9 @@ const app = express();
 const cors = require('cors');
 const port = 3000;
 
+
+// fuck javascript
+
 app.use(cors({
   origin: '*' // Allow requests from this origin
 }));
